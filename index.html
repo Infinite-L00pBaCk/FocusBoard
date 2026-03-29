@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Focus Board — Daily Productivity Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ===== THEME VARIABLES ===== */
+:root{
+  --q1-bg:#FFF2F0;--q1-bdr:#FFCCC5;--q1-acc:#FF5E57;--q1-txt:#C62828;
+  --q2-bg:#EDFAF6;--q2-bdr:#A8EDCF;--q2-acc:#20C997;--q2-txt:#0A6E4A;
+  --q3-bg:#FFFAEC;--q3-bdr:#FFE099;--q3-acc:#FFA940;--q3-txt:#8A5800;
+  --q4-bg:#F4F0FF;--q4-bdr:#D4CAFF;--q4-acc:#845EF7;--q4-txt:#4C1D95;
+  --purple:#845EF7;--purple-lt:#F5F0FF;
+  --text:#1A1A2E;--muted:#8B8FA8;--hint:#C0C4D8;--border:#EDE9F8;
+  --bg-body:linear-gradient(145deg,#FEFCF8 0%,#F8F4FF 50%,#F0FDF9 100%);
+  --hdr-bg:rgba(255,255,255,.96);
+  --add-box-bg:#fff;--inp-bg:#FAFAFE;--inp-bdr:#E8E4F4;
+  --task-bg:rgba(255,255,255,.78);--task-flat:#fff;
+  --search-bg:#fff;--scard-bg:#fff;
+  --nudge-bg:linear-gradient(135deg,#F5F0FF 0%,#EDFAF6 100%);--nudge-bdr:#D4CAFF;
+  --modal-overlay:rgba(0,0,0,.45);--modal-bg:#fff;
+  --footer-bg:#fff;--footer-bdr:#EDE9F8;--footer-txt:#8B8FA8;
+  --prog-track:#EEE9FF;--timer-prog:#FFCCCC;
+  --tbtn-bg:#fff;--tbtn-bdr:#E8E4F4;--tbtn-txt:#8B8FA8;
+  --tbtn-on-bg:#F5F0FF;--tbtn-on-bdr:#845EF7;--tbtn-on-txt:#4C1D95;
+  --quote-bg:linear-gradient(135deg,#FFF8EC 0%,#FFF4FF 100%);
+  --quote-bdr:#FFE099;--quote-txt:#8A5800;--quote-mark:#FFA940;
+  --reset-bg:#fff;
+}
+[data-theme="dark"]{
+  --q1-bg:#3A1A1A;--q1-bdr:#7A2020;--q1-acc:#FF6B65;--q1-txt:#FFAAAA;
+  --q2-bg:#0D2A20;--q2-bdr:#1A5C40;--q2-acc:#2DD4A0;--q2-txt:#6EEDD0;
+  --q3-bg:#2A2000;--q3-bdr:#5C4A00;--q3-acc:#FFBB55;--q3-txt:#FFD980;
+  --q4-bg:#1A1030;--q4-bdr:#4A3080;--q4-acc:#9C80FF;--q4-txt:#C0A8FF;
+  --purple:#9C80FF;--purple-lt:#1A1030;
+  --text:#E8E6F2;--muted:#6A6E88;--hint:#404460;--border:#2A2840;
+  --bg-body:linear-gradient(145deg,#0E0D1A 0%,#13102A 50%,#0D1A16 100%);
+  --hdr-bg:rgba(14,13,26,.96);
+  --add-box-bg:#1A1830;--inp-bg:#13112A;--inp-bdr:#2A2840;
+  --task-bg:rgba(26,24,48,.85);--task-flat:#1A1830;
+  --search-bg:#1A1830;--scard-bg:#1A1830;
+  --nudge-bg:linear-gradient(135deg,#1A1030 0%,#0D2A20 100%);--nudge-bdr:#4A3080;
+  --modal-overlay:rgba(0,0,0,.65);--modal-bg:#1A1830;
+  --footer-bg:#13112A;--footer-bdr:#2A2840;--footer-txt:#6A6E88;
+  --prog-track:#2A2840;--timer-prog:#5C2020;
+  --tbtn-bg:#1A1830;--tbtn-bdr:#2A2840;--tbtn-txt:#6A6E88;
+  --tbtn-on-bg:#1A1030;--tbtn-on-bdr:#9C80FF;--tbtn-on-txt:#C0A8FF;
+  --quote-bg:linear-gradient(135deg,#2A1A00 0%,#1A0A2A 100%);
+  --quote-bdr:#5C4A00;--quote-txt:#FFD980;--quote-mark:#FFBB55;
+  --reset-bg:#1A1830;
+}
+
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg-body);min-height:100vh;color:var(--text);
+  transition:background .3s,color .3s;}
+
+/* ===== NAME MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);z-index:10000;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--modal-bg);border-radius:24px;padding:36px 32px;max-width:440px;width:90%;
+  text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.18);
+  animation:popIn .3s cubic-bezier(.34,1.56,.64,1);border:1.5px solid var(--border);}
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-emoji{font-size:52px;margin-bottom:14px;}
+.modal-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-top:6px;margin-bottom:22px;}
+.modal-inp{width:100%;padding:13px 18px;border-radius:14px;border:2px solid var(--inp-bdr);
+  background:var(--inp-bg);font-size:16px;font-family:inherit;color:var(--text);outline:none;
+  transition:border-color .2s,box-shadow .2s;text-align:center;margin-bottom:14px;}
+.modal-inp:focus{border-color:var(--purple);box-shadow:0 0 0 4px rgba(132,94,247,.14);}
+.modal-btn{width:100%;padding:13px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#845EF7,#5C7CFA);color:#fff;
+  font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;transition:transform .1s,box-shadow .2s;}
+.modal-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(132,94,247,.35);}
+
+/* ===== DAILY QUOTE ===== */
+.quote-strip{background:var(--quote-bg);border:1.5px solid var(--quote-bdr);border-radius:16px;
+  padding:16px 20px;margin-bottom:18px;display:flex;align-items:flex-start;gap:12px;
+  animation:slideIn .4s ease;transition:background .3s,border-color .3s;}
+.quote-mark{font-size:30px;color:var(--quote-mark);line-height:1;flex-shrink:0;margin-top:-3px;}
+.quote-text{font-size:13px;font-weight:600;color:var(--quote-txt);line-height:1.6;font-style:italic;}
+.quote-author{font-size:11px;color:var(--quote-mark);font-weight:700;margin-top:5px;opacity:.85;}
+
+/* ===== HEADER ===== */
+.hdr{background:var(--hdr-bg);border-bottom:1px solid var(--border);padding:14px 20px;
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);transition:background .3s,border-color .3s;}
+.hdr-inner{max-width:860px;margin:0 auto;}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;}
+.app-title{font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--text);}
+.app-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.pills{display:flex;gap:8px;align-items:center;}
+.pill{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1.5px solid;}
+
+/* ===== THEME SWITCHER ===== */
+.theme-switcher{display:flex;gap:4px;background:var(--tbtn-bg);border:1.5px solid var(--tbtn-bdr);
+  border-radius:22px;padding:3px;transition:background .3s,border-color .3s;}
+.tbtn-theme{padding:5px 11px;border-radius:18px;border:none;cursor:pointer;font-size:11px;
+  font-weight:700;font-family:inherit;background:transparent;color:var(--tbtn-txt);transition:all .18s;}
+.tbtn-theme.on{background:var(--tbtn-on-bg);color:var(--tbtn-on-txt);border:1px solid var(--tbtn-on-bdr);}
+.tbtn-theme:hover:not(.on){color:var(--text);}
+
+.prog-wrap{height:5px;background:var(--prog-track);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#845EF7,#20C997);
+  transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+.prog-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--hint);margin-top:3px;}
+
+/* ===== GREETING ===== */
+.greet-banner{background:linear-gradient(135deg,var(--purple-lt),var(--q2-bg));
+  border:1.5px solid var(--border);border-radius:16px;padding:14px 20px;margin-bottom:18px;
+  display:flex;align-items:center;gap:12px;animation:slideIn .35s ease;
+  transition:background .3s,border-color .3s;}
+.greet-wave{font-size:26px;}
+.greet-txt{font-size:15px;font-weight:700;color:var(--text);}
+.greet-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* ===== MAIN ===== */
+.main{max-width:860px;margin:0 auto;padding:20px 16px 40px;}
+
+/* ===== ADD BOX ===== */
+.add-box{background:var(--add-box-bg);border-radius:18px;border:1.5px solid var(--border);
+  padding:18px 20px;margin-bottom:18px;box-shadow:0 2px 20px rgba(132,94,247,.05);
+  transition:background .3s,border-color .3s;}
+.q-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.qbtn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;
+  transition:all .15s;border:1.5px solid;font-family:inherit;}
+.qbtn:hover{transform:scale(1.04);}
+.inp-row{display:flex;gap:8px;}
+.tinp{flex:1;padding:11px 16px;border-radius:12px;border:1.5px solid var(--inp-bdr);
+  background:var(--inp-bg);font-size:14px;font-family:inherit;color:var(--text);
+  transition:border-color .2s,box-shadow .2s;}
+.tinp:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(132,94,247,.12);}
+.dinp{padding:11px 10px;border-radius:12px;border:1.5px solid var(--inp-bdr);
+  background:var(--inp-bg);font-size:13px;font-family:inherit;color:var(--muted);width:150px;
+  color-scheme:light dark;}
+.dinp:focus{outline:none;border-color:var(--purple);}
+.add-btn{padding:11px 22px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#845EF7,#5C7CFA);color:#fff;
+  font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;
+  transition:transform .1s,box-shadow .1s;white-space:nowrap;}
+.add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(132,94,247,.35);}
+.add-btn:active{transform:translateY(0);}
+
+/* ===== TIMER BAR ===== */
+.timer-bar{background:var(--q1-bg);border:1.5px solid var(--q1-bdr);border-radius:14px;
+  padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;
+  animation:slideIn .3s ease;transition:background .3s,border-color .3s;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.t-disp{font-size:26px;font-weight:800;color:var(--q1-txt);font-variant-numeric:tabular-nums;
+  letter-spacing:1px;min-width:72px;}
+.t-info{flex:1;}
+.t-label{font-size:11px;font-weight:700;color:#FF8A80;text-transform:uppercase;letter-spacing:.5px;}
+.t-name{font-size:13px;font-weight:600;color:var(--q1-txt);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;}
+.t-prog-wrap{height:3px;background:var(--timer-prog);border-radius:10px;margin-top:6px;overflow:hidden;}
+.t-prog-fill{height:100%;background:var(--q1-acc);border-radius:10px;transition:width .9s linear;}
+.tbtn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;
+  font-weight:700;font-family:inherit;transition:all .15s;}
+.tbtn:hover{transform:scale(1.04);}
+.tbtn.pri{background:var(--q1-acc);color:#fff;}
+.tbtn.sec{background:var(--q1-bg);color:var(--q1-txt);border:1.5px solid var(--q1-bdr);}
+
+/* ===== VIEW TOGGLE ===== */
+.vtog{display:flex;gap:6px;margin-bottom:18px;align-items:center;flex-wrap:wrap;}
+.vbtn{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;
+  transition:all .15s;border:1.5px solid;font-family:inherit;}
+.vbtn:hover{transform:scale(1.03);}
+.vbtn.on{background:var(--purple-lt);border-color:var(--purple);color:var(--q4-txt);}
+.vbtn.off{background:var(--tbtn-bg);border-color:var(--inp-bdr);color:var(--muted);}
+
+/* ===== RESET BTN — fully theme-aware fix ===== */
+.reset-btn{margin-left:auto;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--q1-bdr);background:var(--reset-bg);color:var(--q1-acc);
+  font-family:inherit;transition:background .2s,color .2s,border-color .2s,transform .15s;}
+.reset-btn:hover{background:var(--q1-bg);transform:scale(1.04);}
+
+/* ===== MATRIX ===== */
+.matrix{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.qcard{border-radius:18px;border:1.5px solid;padding:16px;min-height:160px;
+  transition:box-shadow .2s,background .3s;}
+.qcard:hover{box-shadow:0 4px 24px rgba(0,0,0,.1);}
+.qhdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.qlabel{font-size:14px;font-weight:800;}
+.qdesc{font-size:11px;font-weight:500;margin-top:2px;opacity:.7;}
+.cbadge{min-width:24px;height:24px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;color:#fff;padding:0 8px;flex-shrink:0;}
+.qempty{text-align:center;font-size:12px;padding:14px 0;opacity:.45;}
+
+/* ===== TASKS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.task{display:flex;align-items:center;gap:8px;border-radius:10px;
+  padding:9px 10px;margin-bottom:6px;border:1px solid;transition:all .2s;animation:fadeUp .25s ease;}
+.task.card{background:var(--task-bg);border-color:rgba(128,128,128,.12);}
+.task.flat{background:var(--task-flat);border-color:var(--border);}
+.task.done{opacity:.5;}
+.task:hover{transform:translateX(2px);}
+.chk{width:22px;height:22px;min-width:22px;border-radius:7px;cursor:pointer;border:2px solid;
+  background:transparent;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;padding:0;flex-shrink:0;}
+.chk:hover{transform:scale(1.1);}
+.chk.done-chk{border-color:transparent;}
+.twrap{flex:1;min-width:0;}
+.ttxt{font-size:13px;font-weight:500;color:var(--text);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;}
+.ttxt.struck{text-decoration:line-through;color:var(--muted);}
+.tdate{font-size:11px;color:var(--hint);margin-top:1px;}
+.tacts{display:flex;gap:2px;align-items:center;opacity:0;transition:opacity .15s;}
+.task:hover .tacts{opacity:1;}
+.abtn{width:26px;height:26px;border:none;background:none;cursor:pointer;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;transition:all .1s;padding:0;font-size:14px;}
+.abtn:hover{background:rgba(128,128,128,.15);}
+.timer-ind{font-size:10px;background:var(--q1-bg);color:var(--q1-txt);
+  padding:2px 7px;border-radius:10px;font-weight:700;flex-shrink:0;white-space:nowrap;}
+
+/* ===== LIST HEADER ===== */
+.lsh{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
+  margin:14px 0 6px;display:flex;align-items:center;gap:8px;}
+.lsh-line{flex:1;height:1px;background:currentColor;opacity:.15;}
+
+/* ===== SEARCH ===== */
+.search-row{display:flex;align-items:center;gap:8px;background:var(--search-bg);
+  border:1.5px solid var(--border);border-radius:12px;padding:9px 14px;margin-bottom:16px;
+  transition:background .3s,border-color .3s;}
+.sinp{flex:1;border:none;background:none;font-size:13px;font-family:inherit;
+  color:var(--text);outline:none;}
+.sinp::placeholder{color:var(--hint);}
+
+/* ===== FOCUS CARD ===== */
+.fcard{border-radius:18px;border:1.5px solid;padding:18px;margin-bottom:12px;
+  transition:background .3s,border-color .3s;}
+.fcard-title{font-size:14px;font-weight:800;margin-bottom:12px;}
+
+/* ===== NUDGE ===== */
+.nudge{margin-top:28px;background:var(--nudge-bg);border-radius:16px;
+  border:1.5px solid var(--nudge-bdr);padding:18px 22px;text-align:center;
+  transition:background .3s,border-color .3s;}
+.nudge-txt{font-size:15px;font-weight:700;color:var(--q4-txt);letter-spacing:-.2px;}
+.nudge-sub{font-size:12px;color:var(--purple);margin-top:5px;font-weight:500;}
+
+/* ===== CONFETTI ===== */
+.cconf{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+.cp{position:absolute;animation:cfall 1.8s ease-out forwards;}
+@keyframes cfall{0%{transform:translateY(-10px) rotate(0deg) scale(1);opacity:1;}
+  80%{opacity:1;}100%{transform:translateY(350px) rotate(720deg) scale(.5);opacity:0;}}
+.check-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:60px;animation:cpop 1.5s ease-out forwards;pointer-events:none;z-index:10000;}
+@keyframes cpop{0%{transform:translate(-50%,-50%) scale(0) rotate(-20deg);opacity:1;}
+  40%{transform:translate(-50%,-50%) scale(1.3) rotate(5deg);opacity:1;}
+  70%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(.8);opacity:0;}}
+
+/* ===== EMPTY ===== */
+.empty{text-align:center;padding:48px 20px;}
+.empty-ico{font-size:48px;margin-bottom:12px;}
+
+/* ===== STATS ===== */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+.scard{background:var(--scard-bg);border-radius:14px;border:1.5px solid var(--border);
+  padding:12px;text-align:center;transition:background .3s,border-color .3s;}
+.scard-val{font-size:22px;font-weight:800;}
+.scard-lbl{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;}
+
+/* ===== FOOTER ===== */
+footer{background:var(--footer-bg);border-top:1.5px solid var(--footer-bdr);
+  padding:20px;text-align:center;transition:background .3s,border-color .3s;}
+.footer-inner{max-width:860px;margin:0 auto;}
+.footer-txt{font-size:13px;color:var(--footer-txt);font-weight:600;display:flex;
+  align-items:center;justify-content:center;gap:4px;}
+.heart{display:inline-block;animation:hb 1.4s ease-in-out infinite;color:#FF5E57;}
+@keyframes hb{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
+.fname{color:var(--purple);font-weight:800;font-size:14px;}
+.footer-sub{font-size:11px;color:var(--hint);margin-top:5px;}
+
+/* ===== MOBILE ===== */
+@media(max-width:560px){
+  .matrix{grid-template-columns:1fr;}
+  .inp-row{flex-wrap:wrap;}
+  .dinp{width:100%;}
+  .stats-strip{grid-template-columns:repeat(2,1fr);}
+  .theme-switcher{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="conf" class="cconf"></div>
+<div id="cpop"></div>
+
+<!-- NAME MODAL -->
+<div class="modal-overlay" id="name-modal">
+  <div class="modal-box">
+    <div class="modal-emoji">⚡</div>
+    <div class="modal-title">Welcome to Focus Board</div>
+    <div class="modal-sub">What should I call you? Let's make this personal.</div>
+    <input class="modal-inp" id="name-inp" type="text" placeholder="Your first name…" maxlength="30" autocomplete="off" />
+    <button class="modal-btn" onclick="saveName()">Let's crush it →</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-top">
+      <div>
+        <div class="app-title">⚡ Focus Board</div>
+        <div class="app-sub">Your ruthless daily productivity tracker</div>
+      </div>
+      <div class="hdr-right">
+        <div class="pills" id="hdr-pills"></div>
+        <div class="theme-switcher">
+          <button class="tbtn-theme" data-mode="light"  onclick="setTheme('light')">☀️ Light</button>
+          <button class="tbtn-theme" data-mode="dark"   onclick="setTheme('dark')">🌙 Dark</button>
+          <button class="tbtn-theme" data-mode="system" onclick="setTheme('system')">⚙️ Auto</button>
+        </div>
+      </div>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0"></div></div>
+    <div class="prog-lbl">
+      <span>0%</span>
+      <span id="wr-lbl" style="font-weight:600;color:var(--purple)">0% win rate</span>
+      <span>100%</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- GREETING -->
+  <div class="greet-banner" id="greet-banner" style="display:none">
+    <div class="greet-wave">👋</div>
+    <div>
+      <div class="greet-txt" id="greet-txt">Good morning!</div>
+      <div class="greet-sub" id="greet-sub">Ready to own the day?</div>
+    </div>
+  </div>
+
+  <!-- DAILY QUOTE -->
+  <div class="quote-strip">
+    <div class="quote-mark">"</div>
+    <div>
+      <div class="quote-text" id="quote-text">Loading your daily motivation…</div>
+      <div class="quote-author" id="quote-author"></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-strip" id="stats-strip"></div>
+
+  <!-- ADD TASK -->
+  <div class="add-box">
+    <div class="q-row" id="qrow"></div>
+    <div class="inp-row">
+      <input type="text" class="tinp" id="tinp" placeholder="Add a Do-First task…" />
+      <input type="date" class="dinp" id="dinp" />
+      <button class="add-btn" onclick="addTask()">+ Add</button>
+    </div>
+  </div>
+
+  <!-- TIMER BAR -->
+  <div class="timer-bar" id="tbar" style="display:none">
+    <div class="t-disp" id="tdisp">25:00</div>
+    <div class="t-info">
+      <div class="t-label">🍅 Pomodoro Active</div>
+      <div class="t-name" id="tname"></div>
+      <div class="t-prog-wrap"><div class="t-prog-fill" id="tprog" style="width:100%"></div></div>
+    </div>
+    <button class="tbtn pri" id="ttog" onclick="toggleTimer()">Pause</button>
+    <button class="tbtn sec" onclick="stopTimer()">✕ Stop</button>
+  </div>
+
+  <!-- VIEW TOGGLE -->
+  <div class="vtog">
+    <button class="vbtn" id="v-matrix" onclick="setView('matrix')">⊞ Matrix</button>
+    <button class="vbtn" id="v-list"   onclick="setView('list')">≡ List</button>
+    <button class="vbtn" id="v-focus"  onclick="setView('focus')">◎ Focus</button>
+    <button class="reset-btn" onclick="resetDay()">↺ Reset Day</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content"></div>
+
+  <!-- NUDGE -->
+  <div class="nudge">
+    <div class="nudge-txt" id="nudge-txt"></div>
+    <div class="nudge-sub">Your daily accountability partner · Be ruthless, be consistent.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-txt">
+      Made with <span class="heart">❤️</span> by <span class="fname">PRIYAM</span>
+    </div>
+    <div class="footer-sub">Focus Board · Stay ruthless, stay consistent · Built for deep work.</div>
+  </div>
+</footer>
+
+<script>
+/* ===== QUOTES (day-of-year rotation, 100 quotes) ===== */
+const QUOTES=[
+  {t:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+  {t:"It always seems impossible until it's done.",a:"Nelson Mandela"},
+  {t:"Don't watch the clock; do what it does. Keep going.",a:"Sam Levenson"},
+  {t:"Great things are done by a series of small things brought together.",a:"Vincent Van Gogh"},
+  {t:"You don't have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},
+  {t:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"Winston Churchill"},
+  {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
+  {t:"The only way to do great work is to love what you do.",a:"Steve Jobs"},
+  {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"},
+  {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
+  {t:"Your time is limited, don't waste it living someone else's life.",a:"Steve Jobs"},
+  {t:"Everything you've ever wanted is on the other side of fear.",a:"George Addair"},
+  {t:"The future depends on what you do today.",a:"Mahatma Gandhi"},
+  {t:"An investment in knowledge pays the best interest.",a:"Benjamin Franklin"},
+  {t:"Hardships often prepare ordinary people for an extraordinary destiny.",a:"C.S. Lewis"},
+  {t:"Start where you are. Use what you have. Do what you can.",a:"Arthur Ashe"},
+  {t:"You miss 100% of the shots you don't take.",a:"Wayne Gretzky"},
+  {t:"Whether you think you can or you think you can't, you're right.",a:"Henry Ford"},
+  {t:"The harder you work for something, the greater you'll feel when you achieve it.",a:"Unknown"},
+  {t:"Dream bigger. Do bigger.",a:"Unknown"},
+  {t:"Don't stop when you're tired. Stop when you're done.",a:"Unknown"},
+  {t:"Push yourself, because no one else is going to do it for you.",a:"Unknown"},
+  {t:"Sometimes later becomes never. Do it now.",a:"Unknown"},
+  {t:"Great things never come from comfort zones.",a:"Unknown"},
+  {t:"Dream it. Wish it. Do it.",a:"Unknown"},
+  {t:"Success doesn't just find you. You have to go out and get it.",a:"Unknown"},
+  {t:"The key to success is to focus on goals, not obstacles.",a:"Unknown"},
+  {t:"It's going to be hard, but hard does not mean impossible.",a:"Unknown"},
+  {t:"Don't be afraid to give up the good to go for the great.",a:"John D. Rockefeller"},
+  {t:"I find that the harder I work, the more luck I seem to have.",a:"Thomas Jefferson"},
+  {t:"Success usually comes to those who are too busy to be looking for it.",a:"Henry David Thoreau"},
+  {t:"The way to get started is to quit talking and begin doing.",a:"Walt Disney"},
+  {t:"Don't count the days, make the days count.",a:"Muhammad Ali"},
+  {t:"You are never too old to set another goal or to dream a new dream.",a:"C.S. Lewis"},
+  {t:"With the new day comes new strength and new thoughts.",a:"Eleanor Roosevelt"},
+  {t:"Energy and persistence conquer all things.",a:"Benjamin Franklin"},
+  {t:"Failure will never overtake me if my determination to succeed is strong enough.",a:"Og Mandino"},
+  {t:"Opportunities don't happen. You create them.",a:"Chris Grosser"},
+  {t:"Try not to become a person of success. Rather become a person of value.",a:"Albert Einstein"},
+  {t:"I have not failed. I've just found 10,000 ways that won't work.",a:"Thomas Edison"},
+  {t:"All our dreams can come true, if we have the courage to pursue them.",a:"Walt Disney"},
+  {t:"Life is 10% what happens to you and 90% how you react to it.",a:"Charles R. Swindoll"},
+  {t:"The only place where success comes before work is in the dictionary.",a:"Vidal Sassoon"},
+  {t:"It's not whether you get knocked down, it's whether you get up.",a:"Vince Lombardi"},
+  {t:"Work hard, stay positive, and get up early. It's the best part of the day.",a:"George Allen"},
+  {t:"Little things make big days.",a:"Unknown"},
+  {t:"There is no substitute for hard work.",a:"Thomas Edison"},
+  {t:"The difference between ordinary and extraordinary is that little extra.",a:"Jimmy Johnson"},
+  {t:"Today's accomplishments were yesterday's impossibilities.",a:"Robert H. Schuller"},
+  {t:"Do what you can, with what you have, where you are.",a:"Theodore Roosevelt"},
+  {t:"Things work out best for those who make the best of how things work out.",a:"John Wooden"},
+  {t:"You become what you believe.",a:"Oprah Winfrey"},
+  {t:"To accomplish great things, we must not only act but also dream.",a:"Anatole France"},
+  {t:"The most difficult thing is the decision to act, the rest is merely tenacity.",a:"Amelia Earhart"},
+  {t:"Either you run the day or the day runs you.",a:"Jim Rohn"},
+  {t:"Nothing is impossible, the word itself says 'I'm possible!'",a:"Audrey Hepburn"},
+  {t:"The only person you are destined to become is the person you decide to be.",a:"Ralph Waldo Emerson"},
+  {t:"Go confidently in the direction of your dreams! Live the life you've imagined.",a:"Henry David Thoreau"},
+  {t:"Our greatest glory is not in never falling, but in rising every time we fall.",a:"Confucius"},
+  {t:"Success is walking from failure to failure with no loss of enthusiasm.",a:"Winston Churchill"},
+  {t:"I am not a product of my circumstances. I am a product of my decisions.",a:"Stephen Covey"},
+  {t:"Twenty years from now you will be more disappointed by the things you didn't do.",a:"Mark Twain"},
+  {t:"Life shrinks or expands in proportion to one's courage.",a:"Anaïs Nin"},
+  {t:"If you want to lift yourself up, lift up someone else.",a:"Booker T. Washington"},
+  {t:"The most common way people give up their power is by thinking they don't have any.",a:"Alice Walker"},
+  {t:"The mind is everything. What you think you become.",a:"Buddha"},
+  {t:"Spread love everywhere you go.",a:"Mother Teresa"},
+  {t:"Do not go where the path may lead; go instead where there is no path and leave a trail.",a:"Ralph Waldo Emerson"},
+  {t:"You will face many defeats in life, but never let yourself be defeated.",a:"Maya Angelou"},
+  {t:"In the end, it's not the years in your life that count. It's the life in your years.",a:"Abraham Lincoln"},
+  {t:"Never let the fear of striking out keep you from playing the game.",a:"Babe Ruth"},
+  {t:"Life is either a daring adventure or nothing at all.",a:"Helen Keller"},
+  {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"},
+  {t:"Definiteness of purpose is the starting point of all achievement.",a:"W. Clement Stone"},
+  {t:"Remember that not getting what you want is sometimes a wonderful stroke of luck.",a:"Dalai Lama"},
+  {t:"You can't connect the dots looking forward; you can only connect them looking backward.",a:"Steve Jobs"},
+  {t:"Life is what we make it, always has been, always will be.",a:"Grandma Moses"},
+  {t:"An unexamined life is not worth living.",a:"Socrates"},
+  {t:"Always remember that you are absolutely unique, just like everyone else.",a:"Margaret Mead"},
+  {t:"When you reach the end of your rope, tie a knot in it and hang on.",a:"Franklin D. Roosevelt"},
+  {t:"Many of life's failures are people who did not realize how close they were to success when they gave up.",a:"Thomas Edison"},
+  {t:"Courage is not the absence of fear, but the triumph over it.",a:"Nelson Mandela"},
+  {t:"What you get by achieving your goals is not as important as what you become.",a:"Henry David Thoreau"},
+  {t:"A year from now you may wish you had started today.",a:"Karen Lamb"},
+  {t:"The secret to success is to know something nobody else knows.",a:"Aristotle Onassis"},
+  {t:"If you are not willing to learn, no one can help you. If you are determined to learn, no one can stop you.",a:"Zig Ziglar"},
+  {t:"Action is the foundational key to all success.",a:"Pablo Picasso"},
+  {t:"I can't change the direction of the wind, but I can adjust my sails.",a:"Jimmy Dean"},
+  {t:"Motivation is what gets you started. Habit is what keeps you going.",a:"Jim Ryun"},
+  {t:"Setting goals is the first step in turning the invisible into the visible.",a:"Tony Robbins"},
+  {t:"The difference between who you are and who you want to be is what you do.",a:"Unknown"},
+  {t:"If you're going through hell, keep going.",a:"Winston Churchill"},
+  {t:"Don't limit your challenges, challenge your limits.",a:"Unknown"},
+  {t:"Be so good they can't ignore you.",a:"Steve Martin"},
+  {t:"You don't get what you wish for. You get what you work for.",a:"Unknown"},
+  {t:"Small steps every day add up to a giant leap.",a:"Unknown"},
+  {t:"The only limits you have are the limits you believe.",a:"Wayne Dyer"},
+  {t:"Every morning you have two choices: continue to sleep with your dreams or wake up and chase them.",a:"Unknown"},
+  {t:"Don't tell people your plans. Show them your results.",a:"Unknown"},
+];
+
+const NUDGES=[
+  "🎯 What are we adding to the board today?",
+  "✅ Have you done your daily work? Tell me what to cross off.",
+  "🌟 What's the single most important task for tomorrow?",
+  "🔥 Don't break the chain. What are you working on right now?",
+  "⚡ Momentum is built one task at a time. What's next?",
+  "🎖️ Your future self will thank you. Clear one task now.",
+];
+
+/* ===== STATE ===== */
+let tasks=[
+  {id:1,text:"Draft the project proposal",q:"Q1",done:false,date:"",starred:false},
+  {id:2,text:"Plan next month's goals",q:"Q2",done:false,date:"",starred:false},
+  {id:3,text:"Reply to team emails",q:"Q3",done:false,date:"",starred:false},
+];
+let nid=4,view="matrix",selQ="Q1";
+let tId=null,tSecs=1500,tOn=false,tIv=null,showDone=true,search="";
+let userName="";
+const TOTAL_SECS=1500;
+
+/* ===== Q CONFIG ===== */
+const Q={
+  Q1:{e:"🔥",l:"Do First",d:"Urgent & Important",
+      bg:"var(--q1-bg)",bdr:"var(--q1-bdr)",acc:"var(--q1-acc)",txt:"var(--q1-txt)",
+      aHex:"#FF5E57",tHex:"#C62828"},
+  Q2:{e:"📅",l:"Schedule",d:"Important, Not Urgent",
+      bg:"var(--q2-bg)",bdr:"var(--q2-bdr)",acc:"var(--q2-acc)",txt:"var(--q2-txt)",
+      aHex:"#20C997",tHex:"#0A6E4A"},
+  Q3:{e:"🤝",l:"Delegate",d:"Urgent, Not Important",
+      bg:"var(--q3-bg)",bdr:"var(--q3-bdr)",acc:"var(--q3-acc)",txt:"var(--q3-txt)",
+      aHex:"#FFA940",tHex:"#8A5800"},
+  Q4:{e:"🧊",l:"Drop/Later",d:"Not Urgent, Not Important",
+      bg:"var(--q4-bg)",bdr:"var(--q4-bdr)",acc:"var(--q4-acc)",txt:"var(--q4-txt)",
+      aHex:"#845EF7",tHex:"#4C1D95"},
+};
+
+/* ===== THEME ===== */
+let currentTheme=localStorage.getItem('fb-theme')||'system';
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){
+  const dark=currentTheme==='dark'||(currentTheme==='system'&&mq.matches);
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  document.querySelectorAll('.tbtn-theme').forEach(b=>{
+    b.classList.toggle('on',b.dataset.mode===currentTheme);
+  });
+}
+function setTheme(m){currentTheme=m;localStorage.setItem('fb-theme',m);applyTheme();}
+mq.addEventListener('change',()=>{if(currentTheme==='system')applyTheme();});
+
+/* ===== DAILY QUOTE ===== */
+function loadDailyQuote(){
+  const now=new Date();
+  const start=new Date(now.getFullYear(),0,0);
+  const day=Math.floor((now-start)/(1000*60*60*24));
+  const q=QUOTES[day%QUOTES.length];
+  document.getElementById('quote-text').textContent=q.t;
+  document.getElementById('quote-author').textContent='— '+q.a;
+}
+
+/* ===== GREETING ===== */
+function greetUser(name){
+  if(!name)return;
+  const h=new Date().getHours();
+  let g='Good morning';
+  if(h>=12&&h<17)g='Good afternoon';
+  else if(h>=17)g='Good evening';
+  const subs=[`Ready to own the day, ${name}?`,'Let\'s make today count!',
+    `Your board awaits, ${name}.`,'Time to crush it!','You\'ve got this! 💪'];
+  document.getElementById('greet-txt').textContent=`${g}, ${name}! 🎯`;
+  document.getElementById('greet-sub').textContent=subs[new Date().getDay()%subs.length];
+  document.getElementById('greet-banner').style.display='flex';
+}
+
+/* ===== NAME MODAL ===== */
+function saveName(){
+  const inp=document.getElementById('name-inp');
+  const n=inp.value.trim();
+  if(!n){inp.focus();inp.style.borderColor='var(--q1-acc)';return;}
+  userName=n;localStorage.setItem('fb-username',n);
+  document.getElementById('name-modal').style.display='none';
+  greetUser(n);
+}
+function checkName(){
+  const saved=localStorage.getItem('fb-username');
+  if(saved){
+    userName=saved;
+    document.getElementById('name-modal').style.display='none';
+    greetUser(saved);
+  }else{
+    document.getElementById('name-modal').style.display='flex';
+    setTimeout(()=>document.getElementById('name-inp').focus(),300);
+  }
+}
+
+/* ===== INIT ===== */
+function init(){
+  applyTheme();
+  loadDailyQuote();
+  checkName();
+  buildQRow();
+  document.getElementById('nudge-txt').textContent=NUDGES[Math.floor(Math.random()*NUDGES.length)];
+  document.getElementById('tinp').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+  document.getElementById('name-inp').addEventListener('keydown',e=>{if(e.key==='Enter')saveName();});
+  setView('matrix');
+  updateStats();
+}
+
+/* ===== Q ROW ===== */
+function buildQRow(){
+  document.getElementById('qrow').innerHTML=Object.entries(Q).map(([k,q])=>
+    `<button class="qbtn ${selQ===k?'on':''}" id="qb-${k}" onclick="selQFn('${k}')"
+      style="background:${selQ===k?q.bg:'transparent'};border-color:${selQ===k?q.aHex:'var(--inp-bdr)'};color:${selQ===k?q.tHex:'var(--muted)'}">
+      ${q.e} ${k} · ${q.l}</button>`).join('');
+}
+function selQFn(k){
+  selQ=k;
+  Object.entries(Q).forEach(([key,q])=>{
+    const b=document.getElementById('qb-'+key);if(!b)return;
+    b.className='qbtn '+(key===k?'on':'');
+    b.style.background=key===k?q.bg:'transparent';
+    b.style.borderColor=key===k?q.aHex:'var(--inp-bdr)';
+    b.style.color=key===k?q.tHex:'var(--muted)';
+  });
+  document.getElementById('tinp').placeholder=`Add a ${Q[k].l.toLowerCase()} task…`;
+}
+
+/* ===== ADD ===== */
+function addTask(){
+  const t=document.getElementById('tinp').value.trim();
+  if(!t)return;
+  tasks.push({id:nid++,text:t,q:selQ,done:false,date:document.getElementById('dinp').value,starred:false});
+  document.getElementById('tinp').value='';
+  document.getElementById('dinp').value='';
+  document.getElementById('tinp').focus();
+  updateStats();render();
+}
+
+/* ===== TOGGLE ===== */
+function tog(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  if(!t.done)celebrate();
+  t.done=!t.done;
+  updateStats();render();
+}
+
+/* ===== DELETE ===== */
+function del(id){tasks=tasks.filter(x=>x.id!==id);if(tId===id)stopTimer();updateStats();render();}
+
+/* ===== STAR ===== */
+function star(id){const t=tasks.find(x=>x.id===id);if(t)t.starred=!t.starred;render();}
+
+/* ===== RESET DAY — FIXED ===== */
+function resetDay(){
+  if(!confirm('Reset all tasks to pending? This will un-check everything.'))return;
+  tasks.forEach(t=>{t.done=false;});
+  // also stop any running timer
+  if(tIv){clearInterval(tIv);tIv=null;}
+  tOn=false;tId=null;tSecs=TOTAL_SECS;
+  const tbar=document.getElementById('tbar');
+  if(tbar)tbar.style.display='none';
+  updateStats();
+  render();
+  // restore nudge (not the 100% message)
+  document.getElementById('nudge-txt').textContent=NUDGES[Math.floor(Math.random()*NUDGES.length)];
+}
+
+/* ===== STATS ===== */
+function updateStats(){
+  const total=tasks.length;
+  const done=tasks.filter(t=>t.done).length;
+  const urg=tasks.filter(t=>!t.done&&t.q==='Q1').length;
+  const wr=total>0?Math.round(done/total*100):0;
+  document.getElementById('prog').style.width=wr+'%';
+  document.getElementById('wr-lbl').textContent=wr+'% win rate';
+  const pills=document.getElementById('hdr-pills');
+  let html='';
+  if(urg>0)html+=`<div class="pill" style="background:var(--q1-bg);border-color:var(--q1-bdr);color:var(--q1-txt)">🔥 ${urg} urgent</div>`;
+  const wpBg=wr===100&&total>0?'var(--q2-bg)':'var(--purple-lt)';
+  const wpBdr=wr===100&&total>0?'var(--q2-bdr)':'var(--q4-bdr)';
+  const wpTxt=wr===100&&total>0?'var(--q2-txt)':'var(--q4-txt)';
+  html+=`<div class="pill" style="background:${wpBg};border-color:${wpBdr};color:${wpTxt}">${done}/${total} · ${wr}%</div>`;
+  pills.innerHTML=html;
+  document.getElementById('stats-strip').innerHTML=`
+    <div class="scard"><div class="scard-val" style="color:var(--q1-txt)">${tasks.filter(t=>t.q==='Q1'&&!t.done).length}</div><div class="scard-lbl">🔥 Q1 Pending</div></div>
+    <div class="scard"><div class="scard-val" style="color:var(--q2-txt)">${done}</div><div class="scard-lbl">✅ Completed</div></div>
+    <div class="scard"><div class="scard-val" style="color:var(--purple)">${wr}%</div><div class="scard-lbl">🎯 Win Rate</div></div>
+    <div class="scard"><div class="scard-val" style="color:var(--q3-txt)">${tasks.filter(t=>t.starred).length}</div><div class="scard-lbl">⭐ Starred</div></div>`;
+  if(wr===100&&total>0){
+    document.getElementById('nudge-txt').textContent='🏆 LEGENDARY! Board cleared. What are we crushing tomorrow?';
+  }
+}
+
+/* ===== VIEW ===== */
+function setView(v){
+  view=v;
+  ['matrix','list','focus'].forEach(x=>{
+    const b=document.getElementById('v-'+x);
+    if(b)b.className='vbtn '+(x===v?'on':'off');
+  });
+  render();
+}
+
+/* ===== RENDER ===== */
+function render(){
+  const el=document.getElementById('content');
+  if(view==='matrix')el.innerHTML=renderMatrix();
+  else if(view==='list')el.innerHTML=renderList();
+  else el.innerHTML=renderFocus();
+}
+
+/* ===== MATRIX ===== */
+function renderMatrix(){
+  return'<div class="matrix">'+Object.entries(Q).map(([k,q])=>{
+    const qt=tasks.filter(t=>t.q===k);
+    const pend=qt.filter(t=>!t.done);
+    return`<div class="qcard" style="background:${q.bg};border-color:${q.aHex}40">
+      <div class="qhdr"><div>
+        <div class="qlabel" style="color:${q.tHex}">${q.e} ${q.l}</div>
+        <div class="qdesc" style="color:${q.tHex}">${q.d}</div>
+      </div><div class="cbadge" style="background:${q.aHex}">${pend.length}</div></div>
+      ${qt.filter(t=>!t.done).map(t=>taskHTML(t,q,false)).join('')}
+      ${qt.filter(t=>t.done).map(t=>taskHTML(t,q,false)).join('')}
+      ${qt.length===0?`<div class="qempty" style="color:${q.tHex}">No tasks · Add one above</div>`:''}
+    </div>`;
+  }).join('')+'</div>';
+}
+
+/* ===== LIST ===== */
+function renderList(){
+  if(!tasks.length)return emptyState();
+  let html=`<div class="search-row">
+    <span style="color:var(--hint);font-size:15px">🔍</span>
+    <input class="sinp" placeholder="Search tasks…" id="sinp" value="${esc(search)}" oninput="handleSearch(this.value)">
+    ${search?`<span onclick="clearSearch()" style="cursor:pointer;color:var(--muted);font-size:14px">✕</span>`:''}
+  </div>`;
+  const filt=search?tasks.filter(t=>t.text.toLowerCase().includes(search.toLowerCase())):tasks;
+  if(!filt.length)return html+`<div class="empty"><div class="empty-ico">🔍</div><div style="font-size:15px;font-weight:700">No tasks match</div></div>`;
+  ['Q1','Q2','Q3','Q4'].forEach(k=>{
+    const qt=filt.filter(t=>t.q===k);if(!qt.length)return;
+    const q=Q[k];
+    html+=`<div class="lsh" style="color:${q.tHex}">${q.e} ${q.l}<span class="lsh-line"></span><span style="font-size:10px;opacity:.6">${qt.filter(t=>!t.done).length} pending</span></div>`;
+    html+=qt.map(t=>taskHTML(t,q,true)).join('');
+  });
+  return html;
+}
+
+/* ===== FOCUS ===== */
+function renderFocus(){
+  const q1=tasks.filter(t=>t.q==='Q1');
+  const starred=tasks.filter(t=>t.starred&&t.q!=='Q1');
+  let html=`<div class="fcard" style="background:var(--q1-bg);border-color:var(--q1-bdr)">
+    <div class="fcard-title" style="color:var(--q1-txt)">🔥 Do First — Attack These NOW</div>
+    ${q1.map(t=>taskHTML(t,Q.Q1,true)).join('')}
+    ${!q1.length?`<div style="text-align:center;font-size:14px;padding:16px;color:var(--q2-txt)">🎉 No urgent tasks! Great work.</div>`:''}
+  </div>`;
+  if(starred.length)html+=`<div class="fcard" style="background:var(--q3-bg);border-color:var(--q3-bdr)">
+    <div class="fcard-title" style="color:var(--q3-txt)">⭐ Starred — On Your Radar</div>
+    ${starred.map(t=>taskHTML(t,Q[t.q],true)).join('')}</div>`;
+  const q2=tasks.filter(t=>t.q==='Q2'&&!t.done);
+  if(q2.length)html+=`<div class="fcard" style="background:var(--q2-bg);border-color:var(--q2-bdr)">
+    <div class="fcard-title" style="color:var(--q2-txt)">📅 Up Next — Schedule These</div>
+    ${q2.slice(0,3).map(t=>taskHTML(t,Q.Q2,true)).join('')}
+    ${q2.length>3?`<div style="font-size:12px;color:var(--q2-txt);text-align:center;padding:4px 0;opacity:.6">+${q2.length-3} more in Q2</div>`:''}
+  </div>`;
+  return html;
+}
+
+/* ===== TASK HTML ===== */
+function taskHTML(t,q,flat){
+  const isTimer=tId===t.id;
+  return`<div class="task ${flat?'flat':'card'} ${t.done?'done':''}" id="task-${t.id}">
+    <button class="chk ${t.done?'done-chk':''}" onclick="tog(${t.id})"
+      style="border-color:${t.done?q.aHex:'var(--hint)'};background:${t.done?q.aHex:'transparent'}">
+      ${t.done?`<svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
+    </button>
+    <div class="twrap">
+      <div class="ttxt ${t.done?'struck':''}">${esc(t.text)}</div>
+      ${t.date?`<div class="tdate">📅 ${fmtDate(t.date)}</div>`:''}
+    </div>
+    ${t.starred?`<span style="font-size:14px;flex-shrink:0">⭐</span>`:''}
+    ${isTimer?`<span class="timer-ind">🍅 Active</span>`:''}
+    <div class="tacts">
+      <button class="abtn" onclick="star(${t.id})" title="Star" style="color:${t.starred?'#FFC107':'var(--hint)'}">
+        ${t.starred?'⭐':'☆'}</button>
+      <button class="abtn" onclick="startPomo(${t.id})" title="Pomodoro 25min"
+        style="color:${isTimer?'var(--q1-acc)':'var(--hint)'}">🍅</button>
+      <button class="abtn" onclick="del(${t.id})" title="Delete" style="color:#FF6B6B">✕</button>
+    </div>
+  </div>`;
+}
+
+/* ===== EMPTY ===== */
+function emptyState(){
+  return`<div class="empty"><div class="empty-ico">🎯</div>
+    <div style="font-size:17px;font-weight:700">Board is clear!</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:6px">Add your first task above to start crushing it.</div>
+  </div>`;
+}
+
+/* ===== POMODORO ===== */
+function startPomo(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  if(tIv)clearInterval(tIv);
+  tId=id;tSecs=TOTAL_SECS;tOn=true;
+  document.getElementById('tname').textContent=t.text;
+  document.getElementById('tdisp').textContent=fmtT(tSecs);
+  document.getElementById('tprog').style.width='100%';
+  document.getElementById('tbar').style.display='';
+  document.getElementById('ttog').textContent='Pause';
+  tIv=setInterval(()=>{
+    if(tSecs<=1){clearInterval(tIv);tOn=false;tSecs=0;
+      document.getElementById('tdisp').textContent='00:00';
+      document.getElementById('tprog').style.width='0%';
+      document.getElementById('ttog').textContent='Done!';
+      document.title='🍅 Break time! — Focus Board';
+      setTimeout(()=>document.title='⚡ Focus Board',5000);return;}
+    tSecs--;
+    document.getElementById('tdisp').textContent=fmtT(tSecs);
+    document.getElementById('tprog').style.width=Math.round(tSecs/TOTAL_SECS*100)+'%';
+  },1000);render();
+}
+function toggleTimer(){
+  tOn=!tOn;
+  if(tOn){
+    tIv=setInterval(()=>{
+      if(tSecs<=1){clearInterval(tIv);tOn=false;tSecs=0;
+        document.getElementById('tdisp').textContent='00:00';
+        document.getElementById('tprog').style.width='0%';
+        document.getElementById('ttog').textContent='Done!';return;}
+      tSecs--;
+      document.getElementById('tdisp').textContent=fmtT(tSecs);
+      document.getElementById('tprog').style.width=Math.round(tSecs/TOTAL_SECS*100)+'%';
+    },1000);
+    document.getElementById('ttog').textContent='Pause';
+  }else{clearInterval(tIv);document.getElementById('ttog').textContent='Resume';}
+}
+function stopTimer(){
+  clearInterval(tIv);tOn=false;tId=null;tSecs=TOTAL_SECS;
+  document.getElementById('tbar').style.display='none';render();
+}
+
+/* ===== CELEBRATE ===== */
+function celebrate(){
+  const conf=document.getElementById('conf');
+  const colors=['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#CC5DE8','#20C997','#845EF7'];
+  conf.innerHTML='';
+  for(let i=0;i<45;i++){
+    const p=document.createElement('div');p.className='cp';
+    const sz=6+Math.random()*10;
+    p.style.cssText=`left:${5+Math.random()*90}%;top:${Math.random()*25}%;
+      width:${sz}px;height:${sz}px;background:${colors[i%colors.length]};
+      border-radius:${Math.random()>.5?'50%':'3px'};
+      animation-delay:${Math.random()*.35}s;animation-duration:${1.2+Math.random()*.8}s;`;
+    conf.appendChild(p);
+  }
+  document.getElementById('cpop').innerHTML='<div class="check-pop">✅</div>';
+  setTimeout(()=>{conf.innerHTML='';document.getElementById('cpop').innerHTML='';},2300);
+}
+
+/* ===== SEARCH ===== */
+function handleSearch(v){search=v;render();}
+function clearSearch(){search='';render();}
+
+/* ===== HELPERS ===== */
+function fmtT(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function fmtDate(d){
+  if(!d)return'';
+  try{const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+  catch{return d;}}
+function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML;}
+
+init();
+</script>
+</body>
+</html>
