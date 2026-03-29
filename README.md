@@ -1,50 +1,43 @@
-# ⚡ Focus Board — Daily Productivity Tracker
+<div align="center">
 
-A clean, beautiful, single-file productivity app built with pure HTML, CSS & JavaScript. No frameworks. No installs. Just open and go.
+# ⚡ Focus Board
 
-![Focus Board Preview](https://img.shields.io/badge/Status-Live-brightgreen?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F-red?style=flat-square)
+### Your ruthless daily productivity tracker
 
-> Made with ❤️ by **PRIYAM**
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-focus--board--theta.vercel.app-845EF7?style=for-the-badge)](https://focus-board-theta.vercel.app/)
+[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-e05a6e?style=for-the-badge)](https://github.com/priyam)
+[![License: MIT](https://img.shields.io/badge/License-MIT-20C997?style=for-the-badge)](./LICENSE)
+[![No Dependencies](https://img.shields.io/badge/Dependencies-Zero-FFA940?style=for-the-badge)](#)
+
+**[🌐 Open App →](https://focus-board-theta.vercel.app/)**
+
+</div>
+
+---
+
+## 📸 Preview
+
+> **[➡️ Try it live: https://focus-board-theta.vercel.app/](https://focus-board-theta.vercel.app/)**
+
+Focus Board is a zero-dependency, single-file productivity app powered by the **Eisenhower Matrix** method. No sign-up, no installs, no clutter — just open and start crushing your day.
 
 ---
 
 ## ✨ Features
 
-- **Eisenhower Matrix** — Organize tasks into 4 quadrants: Do First, Schedule, Delegate, Drop
-- **3 Views** — Matrix, List, and Focus mode
-- **🍅 Pomodoro Timer** — Built-in 25-minute focus timer per task
-- **Daily Motivational Quotes** — A fresh quote every day, auto-rotated
-- **Personalized Welcome** — Greets you by name (saved to localStorage)
-- **⭐ Star Tasks** — Pin important tasks to your Focus view
-- **Task Search** — Filter tasks instantly in List view
-- **Progress Bar** — Live win-rate tracker in the header
-- **Stats Strip** — See Q1 pending, completed count, win rate & starred tasks
-- **Confetti Celebration** — Satisfying animation when you complete a task
-- **Reset Day** — One-click reset to start fresh (with timer safety fix)
-- **Fully Responsive** — Works great on mobile and desktop
-- **Zero dependencies** — Single HTML file, works offline
-
----
-
-## 🚀 Getting Started
-
-### Option 1 — Open directly
-Just download `index.html` and open it in any browser. That's it.
-
-### Option 2 — GitHub Pages (recommended)
-1. Fork this repo
-2. Go to **Settings → Pages**
-3. Set source to `main` branch, `/ (root)`
-4. Your app will be live at `https://yourusername.github.io/focus-board`
-
-### Option 3 — Clone & run locally
-```bash
-git clone https://github.com/yourusername/focus-board.git
-cd focus-board
-open index.html   # macOS
-# or
-start index.html  # Windows
-```
+| Feature | Description |
+|---|---|
+| 🧩 **Eisenhower Matrix** | 4-quadrant system: Do First, Schedule, Delegate, Drop |
+| 🔍 **3 Views** | Matrix grid, flat List with search, and laser Focus mode |
+| 🍅 **Pomodoro Timer** | Built-in 25-min focus timer on any task, with pause & resume |
+| 💡 **Daily Quotes** | A fresh motivational quote every single day, auto-rotated |
+| 👋 **Personalized Greeting** | Remembers your name across sessions via localStorage |
+| ⭐ **Star Tasks** | Pin high-priority tasks to the Focus view |
+| 📊 **Live Stats** | Win rate, pending Q1 count, completions & starred tasks |
+| 🎉 **Confetti Celebration** | Satisfying animation every time you complete a task |
+| ↺ **Reset Day** | One-click full reset — safely stops the timer too |
+| 📱 **Fully Responsive** | Works beautifully on mobile, tablet and desktop |
+| ⚡ **Zero Dependencies** | Pure HTML + CSS + JS — works completely offline |
 
 ---
 
@@ -52,11 +45,13 @@ start index.html  # Windows
 
 ```
 focus-board/
-├── index.html        # The entire app — HTML + CSS + JS in one file
-├── README.md         # You're reading this
-├── LICENSE           # MIT License
-├── .gitignore        # Git ignore rules
+├── index.html        ← The entire app (HTML + CSS + JS in one file)
+├── README.md         ← You're reading this
+├── LICENSE           ← MIT License
+├── .gitignore        ← Git ignore rules
 └── .github/
+    ├── workflows/
+    │   └── deploy.yml               ← Auto-deploy to GitHub Pages
     └── ISSUE_TEMPLATE/
         ├── bug_report.md
         └── feature_request.md
@@ -64,56 +59,75 @@ focus-board/
 
 ---
 
-## 🧩 How It Works
+## 🚀 Getting Started
 
-### Eisenhower Matrix Quadrants
+### ▶️ Just use it
+**[https://focus-board-theta.vercel.app/](https://focus-board-theta.vercel.app/)** — open and go, nothing to install.
 
-| Quadrant | Label | Description |
-|----------|-------|-------------|
-| 🔥 Q1 | Do First | Urgent & Important |
-| 📅 Q2 | Schedule | Important, Not Urgent |
-| 🤝 Q3 | Delegate | Urgent, Not Important |
-| 🧊 Q4 | Drop/Later | Not Urgent, Not Important |
+### 💾 Run locally
+```bash
+git clone https://github.com/yourusername/focus-board.git
+cd focus-board
+open index.html        # macOS
+start index.html       # Windows
+xdg-open index.html    # Linux
+```
 
-### Views
-- **⊞ Matrix** — Classic 2×2 grid layout
-- **≡ List** — All tasks in one list with search
-- **◎ Focus** — Only your Q1 + starred tasks
+### ☁️ Deploy your own fork
+```bash
+# 1. Fork this repo on GitHub
+# 2. Connect to Vercel or enable GitHub Pages
+# 3. Done — it deploys automatically on every push
+```
 
-### Pomodoro Timer
-Click the 🍅 icon on any task to start a 25-minute focus session. Pause, resume, or stop at any time.
+---
+
+## 🧩 The Eisenhower Matrix
+
+The app is built around the **Eisenhower Matrix** — a proven method for prioritizing tasks by urgency and importance.
+
+```
+                  URGENT          NOT URGENT
+             ┌──────────────┬──────────────────┐
+  IMPORTANT  │  🔥 Q1       │  📅 Q2           │
+             │  DO FIRST    │  SCHEDULE        │
+             ├──────────────┼──────────────────┤
+NOT IMPORTANT│  🤝 Q3       │  🧊 Q4           │
+             │  DELEGATE    │  DROP / LATER    │
+             └──────────────┴──────────────────┘
+```
 
 ---
 
 ## 🛠️ Customization
 
-Since everything is in `index.html`, customization is easy:
+Everything lives in `index.html` — open it in any editor and tweak away.
 
-**Change Pomodoro duration** — find `TOTAL_SECS=1500` and change `1500` (seconds) to your preferred duration.
-
-**Add your own quotes** — find the `QUOTES` array in the `<script>` section and add objects like:
+**Change Pomodoro duration**
 ```js
-{text: "Your quote here.", author: "— Author Name"},
+const TOTAL_SECS = 1500; // 1500 = 25 min, 2700 = 45 min
 ```
 
-**Change color theme** — edit the CSS variables in `:root {}` at the top of the `<style>` block.
+**Add your own daily quotes**
+```js
+const QUOTES = [
+  { text: "Your quote here.", author: "— Author Name" },
+  // ...
+];
+```
 
----
-
-## 📸 Screenshots
-
-> _Add your own screenshots here after deploying!_
+**Restyle the theme** — edit the CSS variables in `:root {}` at the top of the `<style>` block.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome!
+All contributions are welcome — bug fixes, new features, UI tweaks.
 
 1. Fork the repo
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push: `git push origin feature/my-feature`
+2. Create your branch: `git checkout -b feature/awesome-feature`
+3. Commit changes: `git commit -m 'Add awesome feature'`
+4. Push: `git push origin feature/awesome-feature`
 5. Open a Pull Request
 
 Please use the issue templates for bug reports and feature requests.
@@ -122,8 +136,14 @@ Please use the issue templates for bug reports and feature requests.
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+Licensed under the **MIT License** — see [LICENSE](./LICENSE) for details. Free to use, modify and distribute.
 
 ---
 
-<div align="center">Made with ❤️ by <strong>PRIYAM</strong></div>
+<div align="center">
+
+Made with ❤️ by **PRIYAM**
+
+⭐ Star this repo if it helped you stay focused!
+
+</div>
