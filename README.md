@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ Focus Board
+# ⚡ Focus-Board
 
 ### Your ruthless daily productivity tracker
 
